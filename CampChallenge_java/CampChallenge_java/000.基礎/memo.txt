@@ -1,0 +1,15 @@
+・OS
+Windows10 Home(64bit)
+
+・OSバージョン
+1709
+
+・CPU
+intel core i5 7200U(2.5Ghz)
+
+・RAM
+8GB
+
+・SSD
+256GB
+
