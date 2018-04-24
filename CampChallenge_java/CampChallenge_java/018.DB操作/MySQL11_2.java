@@ -60,7 +60,7 @@ public class MySQL11_2 extends HttpServlet {
             //コネクタ生成・接続
             db_con = DriverManager.getConnection("jdbc:mysql://localhost:3306/Challenge_db", "ryo", "bluerose");
 
-            //検索対象はHTMLのフォームから取得
+            //更新対象はHTMLのフォームから取得
             String updateText = "UPDATE profiles SET name ='" + updateN + "', tel ='" + updateT + "', age =" 
                     + updateA + ", birthday ='"+updateB+ "' WHERE profilesID =" + updateID;
             
