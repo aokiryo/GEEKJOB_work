@@ -64,7 +64,7 @@ public class InsertConfirm extends HttpServlet {
                 data.setError("生年月日");
             }
             
-            if(data.getType().equals("")){
+            if(data.getType() == null){
                 data.setError("種別");
             }
 

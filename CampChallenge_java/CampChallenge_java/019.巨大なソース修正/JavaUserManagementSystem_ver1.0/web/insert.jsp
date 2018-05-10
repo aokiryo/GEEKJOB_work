@@ -25,40 +25,46 @@
         <form action="insertconfirm" method="POST">
             <%if (hs.getAttribute("name") != null) {
                     defaultName = (String) hs.getAttribute("name");
-            }%>
+                }%>
             名前:
             <input type="text" name="name" value="<%= defaultName%>">
             <br><br>
 
             <%if (hs.getAttribute("year") != null) {
-                    defaultYear = (String) hs.getAttribute("year");
+                    if (!hs.getAttribute("year").equals("")) {
+                        defaultYear = (String) hs.getAttribute("year");
+                    }
                 }%>
             <%if (hs.getAttribute("month") != null) {
-                    defaultMonth = (String) hs.getAttribute("month");
+                    if (!hs.getAttribute("month").equals("")) {
+                        defaultMonth = (String) hs.getAttribute("month");
+                    }
                 }%>
             <%if (hs.getAttribute("day") != null) {
-                    defaultDay = (String) hs.getAttribute("day");
+                    if (!hs.getAttribute("day").equals("")) {
+                        defaultDay = (String) hs.getAttribute("day");
+                    }
                 }%>
             生年月日:
             <select name="year">
                 <option value="">----</option>
                 <% for (int i = 1950; i <= 2010; i++) {%>
-                <option value="<%=i%>"<%if(i == Integer.parseInt(defaultYear)){%>
-                selected<%}%>> <%=i%></option>
+                <option value="<%=i%>"<%if (i == Integer.parseInt(defaultYear)) {%>
+                        selected<%}%>> <%=i%></option>
                 <%}%>
             </select>年
             <select name="month">
                 <option value="">--</option>
                 <% for (int i = 1; i <= 12; i++) {%>
-                <option value="<%=i%>"<%if(i == Integer.parseInt(defaultMonth)){%>
-                selected<%}%>> <%=i%></option>
+                <option value="<%=i%>"<%if (i == Integer.parseInt(defaultMonth)) {%>
+                        selected<%}%>> <%=i%></option>
                 <%}%>
             </select>月
             <select name="day">
                 <option value="">--</option>
                 <% for (int i = 1; i <= 31; i++) {%>
-                <option value="<%=i%>"<%if(i == Integer.parseInt(defaultDay)){%>
-                selected<%}%>> <%=i%></option>
+                <option value="<%=i%>"<%if (i == Integer.parseInt(defaultDay)) {%>
+                        selected<%}%>> <%=i%></option>
                 <%}%>
             </select>日
             <br><br>
