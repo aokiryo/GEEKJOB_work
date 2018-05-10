@@ -33,6 +33,8 @@ public class InsertConfirm extends HttpServlet {
             if(accesschk ==null || (Integer)session.getAttribute("ac")!=Integer.parseInt(accesschk)){
                 throw new Exception("不正なアクセスです");
             }
+            //U.D.Beansのインスタンス生成
+            UserDataBeans data = new UserDataBeans();
             
             //フォームからの入力を取得
             String name = request.getParameter("name");
@@ -43,17 +45,49 @@ public class InsertConfirm extends HttpServlet {
             String tell = request.getParameter("tell");
             String comment = request.getParameter("comment");
 
-            //セッションに格納
-            session.setAttribute("name", name);
-            session.setAttribute("year", year);
-            session.setAttribute("month",month);
-            session.setAttribute("day", day);
-            session.setAttribute("type", type);
-            session.setAttribute("tell", tell);
-            session.setAttribute("comment", comment);
+            //U.D.Beansに格納
+            data.setName(name);
+            data.setYear(year);
+            data.setMonth(month);
+            data.setDay(day);
+            data.setType(type);
+            data.setTell(tell);
+            data.setComment(comment);
             System.out.println("Session updated!!");
             
+            //未入力の項目があればその情報も格納して渡す
+            if(data.getName().equals("")){
+                data.setError("名前");
+            }
+            
+            if(data.getYear().equals("") || data.getMonth().equals("") || data.getDay().equals("")){
+                data.setError("生年月日");
+            }
+            
+            if(data.getType().equals("")){
+                data.setError("種別");
+            }
+
+            if(data.getTell().equals("")){
+                data.setError("電話番号");
+            }
+            
+            if(data.getComment().equals("")){
+                data.setError("自己紹介");
+            }
+            
+            //クラスをまたいで利用するためセッションに保存する
+            session.setAttribute("name", data.getName());
+            session.setAttribute("year", data.getYear());
+            session.setAttribute("month", data.getMonth());
+            session.setAttribute("day", data.getDay());
+            session.setAttribute("type", data.getType());
+            session.setAttribute("tell", data.getTell());
+            session.setAttribute("comment", data.getComment());
+            session.setAttribute("DATA", data);
+            
             request.getRequestDispatcher("/insertconfirm.jsp").forward(request, response);
+            
         }catch(Exception e){
             request.setAttribute("error", e.getMessage());
             request.getRequestDispatcher("/error.jsp").forward(request, response);

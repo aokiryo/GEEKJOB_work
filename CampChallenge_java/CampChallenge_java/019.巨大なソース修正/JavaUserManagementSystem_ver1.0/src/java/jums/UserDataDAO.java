@@ -9,8 +9,10 @@ package jums;
 import base.DBManager;
 import java.sql.PreparedStatement;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 public class UserDataDAO {
     
     //インスタンスオブジェクトを返却させてコードの簡略化
@@ -30,7 +32,11 @@ public class UserDataDAO {
             con = DBManager.getConnection();
             st =  con.prepareStatement("INSERT INTO user_t(name,birthday,tell,type,comment,newDate) VALUES(?,?,?,?,?,?)");
             st.setString(1, ud.getName());
-            st.setDate(2, new java.sql.Date(System.currentTimeMillis()));//指定のタイムスタンプ値からSQL格納用のDATE型に変更
+            
+            //Date型→String型→SQL用Date型の順に直すゴリ押し
+            String birthday = new SimpleDateFormat("yyyy-MM-dd").format(ud.getBirthday());
+            st.setDate(2, Date.valueOf(birthday));//指定のタイムスタンプ値からSQL格納用のDATE型に変更
+            
             st.setString(3, ud.getTell());
             st.setInt(4, ud.getType());
             st.setString(5, ud.getComment());
