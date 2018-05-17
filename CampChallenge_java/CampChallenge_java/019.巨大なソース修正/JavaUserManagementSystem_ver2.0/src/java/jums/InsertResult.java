@@ -1,6 +1,7 @@
 package jums;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -36,7 +37,7 @@ public class InsertResult extends HttpServlet {
             //アクセスルートチェック
             String accesschk = request.getParameter("ac");
             if(accesschk ==null || (Integer)session.getAttribute("ac")!=Integer.parseInt(accesschk)){
-                throw new Exception("不正なアクセスです");
+                throw new Exception();
             }
             
             UserDataBeans udb = (UserDataBeans)session.getAttribute("udb");
@@ -55,9 +56,15 @@ public class InsertResult extends HttpServlet {
             request.setAttribute("udb", udb);
             
             request.getRequestDispatcher("/insertresult.jsp").forward(request, response);
+        }catch(SQLException e){
+            //何らかの理由で失敗したらエラーページにエラー文を渡して表示。想定は不正なアクセスとDBエラー
+            request.setAttribute("error", "データベースとの接続エラーです");
+            System.out.print(e.getStackTrace());
+            request.getRequestDispatcher("/error.jsp").forward(request, response);
         }catch(Exception e){
             //何らかの理由で失敗したらエラーページにエラー文を渡して表示。想定は不正なアクセスとDBエラー
-            request.setAttribute("error", e.getMessage());
+            request.setAttribute("error", "不正なアクセスです");
+            System.out.print(e.getStackTrace());
             request.getRequestDispatcher("/error.jsp").forward(request, response);
         }
     }

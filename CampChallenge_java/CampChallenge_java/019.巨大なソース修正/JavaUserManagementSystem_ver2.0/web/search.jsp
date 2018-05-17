@@ -1,10 +1,12 @@
-<%@page 
+<%@page import="javax.servlet.http.HttpSession"
         import="jums.JumsHelper" %>
 <%
     JumsHelper jh = JumsHelper.getInstance();
+    HttpSession hs = request.getSession();
 %>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page errorPage="error.jsp"%>
 <!DOCTYPE html>
 <html>
     <head>
@@ -12,7 +14,7 @@
         <title>JUMSユーザー情報検索画面</title>
     </head>
     <body>
-         <form action="SearchResult" method="POST">
+         <form action="SearchResult" method="GET">
         名前:
         <input type="text" name="name">
         <br><br>
@@ -33,6 +35,7 @@
             <% } %>
         <br>
 
+        <input type="hidden" name="acc"  value="<%= hs.getAttribute("acc")%>">
         <input type="submit" name="btnSubmit" value="検索">
     </form>
         <br>

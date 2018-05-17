@@ -2,10 +2,12 @@ package jums;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.SQLException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -24,22 +26,33 @@ public class ResultDetail extends HttpServlet {
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        try{
+        
+        //セッションスタート
+        HttpSession session = request.getSession();
+        
+        try {
             request.setCharacterEncoding("UTF-8");//リクエストパラメータの文字コードをUTF-8に変更
 
             //DTOオブジェクトにマッピング。DB専用のパラメータに変換
+            //疑似アクセスチェック
             UserDataDTO searchData = new UserDataDTO();
-            searchData.setUserID(2);
+            searchData.setUserID(Integer.parseInt(request.getParameter("id")));
 
-            UserDataDTO resultData = UserDataDAO .getInstance().searchByID(searchData);
+            UserDataDTO resultData = UserDataDAO.getInstance().searchByID(searchData);
             request.setAttribute("resultData", resultData);
             
-            request.getRequestDispatcher("/resultdetail.jsp").forward(request, response);  
-        }catch(Exception e){
+            request.getRequestDispatcher("/resultdetail.jsp").forward(request, response);
+        }catch(SQLException e){
             //何らかの理由で失敗したらエラーページにエラー文を渡して表示。想定は不正なアクセスとDBエラー
-            request.setAttribute("error", e.getMessage());
+            request.setAttribute("error", "データベースとの接続エラーです");
+            System.out.print(e.getStackTrace());
             request.getRequestDispatcher("/error.jsp").forward(request, response);
-        }        
+        } catch (Exception e) {
+            //何らかの理由で失敗したらエラーページにエラー文を渡して表示。想定は不正なアクセスとDBエラー
+            request.setAttribute("error", "不正なアクセスです");
+            System.out.print(e.getStackTrace());
+            request.getRequestDispatcher("/error.jsp").forward(request, response);
+        }
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">

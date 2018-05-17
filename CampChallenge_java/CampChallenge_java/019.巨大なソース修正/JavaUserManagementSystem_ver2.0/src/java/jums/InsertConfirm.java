@@ -36,7 +36,7 @@ public class InsertConfirm extends HttpServlet {
             //アクセスルートチェック
             String accesschk = request.getParameter("ac");
             if(accesschk ==null || (Integer)session.getAttribute("ac")!=Integer.parseInt(accesschk)){
-                throw new Exception("不正なアクセスです");
+                throw new Exception();
             }
             
             //フォームからの入力を取得して、JavaBeansに格納
@@ -55,7 +55,8 @@ public class InsertConfirm extends HttpServlet {
             
             request.getRequestDispatcher("/insertconfirm.jsp").forward(request, response);
         }catch(Exception e){
-            request.setAttribute("error", e.getMessage());
+            request.setAttribute("error", "不正なアクセスです");
+            System.out.print(e.getStackTrace());
             request.getRequestDispatcher("/error.jsp").forward(request, response);
         }
             

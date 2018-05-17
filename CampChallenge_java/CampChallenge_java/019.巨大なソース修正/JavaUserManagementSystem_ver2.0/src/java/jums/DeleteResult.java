@@ -2,10 +2,15 @@ package jums;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -26,17 +31,44 @@ public class DeleteResult extends HttpServlet {
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         PrintWriter out = response.getWriter();
+        
+        //セッションスタート
+        HttpSession session = request.getSession();
+        
         try {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet DeleteResult</title>");            
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet DeleteResult at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
+            request.setCharacterEncoding("UTF-8");//リクエストパラメータの文字コードをUTF-8に変更
+
+            //アクセスルートチェック
+            String accesschk = request.getParameter("acc");
+            if (accesschk == null || (Integer) session.getAttribute("acc") != Integer.parseInt(accesschk)) {
+                throw new Exception();
+            }
+            
+            UserDataDTO deleteData = (UserDataDTO)session.getAttribute("resultdetail");
+            
+            //DBからデータ削除
+            UserDataDAO.getInstance().delete(deleteData);
+            
+            //セッションからも当該レコード削除
+            ArrayList<UserDataDTO> ud = (ArrayList<UserDataDTO>)session.getAttribute("resultData");
+            for(int i =0; i < ud.size(); i++){
+                if(ud.get(i).getUserID() == deleteData.getUserID()){
+                    ud.remove(i);
+                }
+            }
+            session.setAttribute("resultData", ud);
+            
+            request.getRequestDispatcher("/deleteresult.jsp").forward(request, response);
+            
+        } catch (SQLException ex) {
+            request.setAttribute("error", "データベースとの接続エラーです");
+            System.out.print(ex.getStackTrace());
+            request.getRequestDispatcher("/error.jsp").forward(request, response);
+        } catch (Exception ex) {
+            //何らかの理由で失敗したらエラーページにエラー文を渡して表示。想定は不正なアクセスとDBエラー
+            request.setAttribute("error", "不正なアクセスです");
+            System.out.print(ex.getStackTrace());
+            request.getRequestDispatcher("/error.jsp").forward(request, response);
         } finally {
             out.close();
         }

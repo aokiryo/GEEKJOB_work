@@ -7,8 +7,12 @@
         <title>error</title>
     </head>
     <body>
-        エラーが発生しました。以下の項目を確認してください。<br>
-        <%=request.getAttribute("error")%><br><br>
+        エラーが発生しました。以下の項目を確認してください。<br><br>
+        <% if(request.getAttribute("error") != null){%>
+        <%= request.getAttribute("error")%>
+        <%}else{%>
+        不正なアクセスです
+        <%}%><br><br>
         <%=JumsHelper.getInstance().home()%>
     </body>
 </html>
